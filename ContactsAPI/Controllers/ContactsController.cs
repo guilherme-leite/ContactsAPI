@@ -25,6 +25,17 @@ namespace ContactsAPI.Controllers
             return Ok(_dbContext.Contacts.ToList());
         }
 
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> Get([FromRoute] Guid id)
+        {
+            var contact = await _dbContext.Contacts.FindAsync(id);
+            
+            if (contact == null) return NotFound();
+
+            return Ok(contact);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(ContactDto contact)
         {
