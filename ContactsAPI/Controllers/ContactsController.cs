@@ -3,6 +3,8 @@ using ContactsAPI.DTOS;
 using ContactsAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Numerics;
 
 namespace ContactsAPI.Controllers
 {
@@ -39,6 +41,24 @@ namespace ContactsAPI.Controllers
             await _dbContext.SaveChangesAsync();
 
             return Ok(newContact);
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, ContactDto contact)
+        {
+            var updatedContact = await _dbContext.Contacts.FindAsync(id);
+
+            if (updatedContact == null) return NotFound();
+
+            updatedContact.FullName = contact.FullName;
+            updatedContact.Address = contact.Address;
+            updatedContact.Phone = contact.Phone;
+            updatedContact.Email = contact.Email;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(updatedContact);
         }
     }
 }
